@@ -24,7 +24,7 @@ public final class WordCountSocketJava8Ex {
 	 
 	  public static void main(String[] args) throws Exception {
 	   
-        System.setProperty("hadoop.home.dir", "E:\\hadoop");
+        System.setProperty("hadoop.home.dir", "C:\\Users\\sk250102\\Downloads\\bigdataSetup\\hadoop");
 	
 	    SparkConf sparkConf = new SparkConf().setAppName("WordCountSocketEx").setMaster("local[*]");
 	    JavaStreamingContext streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(1));
@@ -41,10 +41,10 @@ public final class WordCountSocketJava8Ex {
 	   
 	    wordCounts.print();
 	    
-	  JavaPairDStream<String, Integer> joinedDstream = wordCounts.transformToPair(
+	    JavaPairDStream<String, Integer> joinedDstream = wordCounts.transformToPair(
 			   new Function<JavaPairRDD<String, Integer>, JavaPairRDD<String, Integer>>() {
 				    @Override public JavaPairRDD<String, Integer> call(JavaPairRDD<String, Integer> rdd) throws Exception {
-				    	rdd.join(initialRDD).mapToPair(new PairFunction<Tuple2<String,Tuple2<Integer,Integer>>, String, Integer>() {
+				    	JavaPairRDD<String, Integer> modRdd = rdd.join(initialRDD).mapToPair(new PairFunction<Tuple2<String,Tuple2<Integer,Integer>>, String, Integer>() {
 							@Override
 							public Tuple2<String, Integer> call(Tuple2<String, Tuple2<Integer, Integer>> joinedTuple)
 									throws Exception {
@@ -53,11 +53,11 @@ public final class WordCountSocketJava8Ex {
 							}
 						});
 					
-					return rdd; 				     
+					return modRdd; 				     
 				    }
 				  });
 	   
-	  joinedDstream.print();
+	  	joinedDstream.print();
 	    streamingContext.start();
 	    streamingContext.awaitTermination();
 	  }

@@ -24,11 +24,11 @@ public class WordCountSocketStateful {
 	 
 
 	  public static void main(String[] args) throws Exception {
-		  System.setProperty("hadoop.home.dir", "E:\\hadoop");
+		  System.setProperty("hadoop.home.dir", "C:\\Users\\sk250102\\Downloads\\bigdataSetup\\hadoop");
 			
 		    SparkConf sparkConf = new SparkConf().setAppName("WordCountSocketEx").setMaster("local[*]");
 		    JavaStreamingContext streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(1));
-		    streamingContext.checkpoint("E:\\hadoop\\checkpoint");
+		    streamingContext.checkpoint("C:\\Users\\sk250102\\Downloads\\bigdataSetup\\hadoop\\checkpoint");
 		 // Initial state RDD input to mapWithState
 		    @SuppressWarnings("unchecked")
 		    List<Tuple2<String, Integer>> tuples =Arrays.asList(new Tuple2<>("hello", 1), new Tuple2<>("world", 1));

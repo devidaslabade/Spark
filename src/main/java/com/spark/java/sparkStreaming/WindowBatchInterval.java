@@ -23,7 +23,7 @@ public class WindowBatchInterval {
 	
 	 public static void main(String[] args) {
 	    	//Window Specific property if Hadoop is not instaalled or HADOOP_HOME is not set
-			 System.setProperty("hadoop.home.dir", "E:\\hadoop");
+			 System.setProperty("hadoop.home.dir", "C:\\Users\\sk250102\\Downloads\\bigdataSetup\\hadoop");
 	    	//Logger rootLogger = LogManager.getRootLogger();
 	   		//rootLogger.setLevel(Level.WARN); 
 	        SparkConf conf = new SparkConf().setAppName("KafkaExample").setMaster("local[*]");
@@ -31,11 +31,11 @@ public class WindowBatchInterval {
 	     
 	        JavaSparkContext sc = new JavaSparkContext(conf);
 	        JavaStreamingContext streamingContext = new JavaStreamingContext(sc, Durations.minutes(2));
-	        streamingContext.checkpoint("E:\\hadoop\\checkpoint");
+	        streamingContext.checkpoint("C:\\Users\\sk250102\\Downloads\\bigdataSetup\\hadoop\\checkpoint");
 	        Logger rootLogger = LogManager.getRootLogger();
 	   		rootLogger.setLevel(Level.WARN); 
 	   		
-	   	 List<Tuple2<String, Integer>> tuples = Arrays.asList(new Tuple2<>("hello", 10), new Tuple2<>("world", 10));
+	   		List<Tuple2<String, Integer>> tuples = Arrays.asList(new Tuple2<>("hello", 10), new Tuple2<>("world", 10));
 		    JavaPairRDD<String, Integer> initialRDD = streamingContext.sparkContext().parallelizePairs(tuples);
 				    
 
