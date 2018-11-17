@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.StorageLevels;
@@ -28,6 +31,9 @@ public final class WordCountSocketJava8Ex {
 	
 	    SparkConf sparkConf = new SparkConf().setAppName("WordCountSocketEx").setMaster("local[*]");
 	    JavaStreamingContext streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(1));
+	    
+		Logger rootLogger = LogManager.getRootLogger();
+		rootLogger.setLevel(Level.WARN);
 	    
 	    List<Tuple2<String, Integer>> tuples = Arrays.asList(new Tuple2<>("hello", 10), new Tuple2<>("world", 10));
 	    JavaPairRDD<String, Integer> initialRDD = streamingContext.sparkContext().parallelizePairs(tuples);

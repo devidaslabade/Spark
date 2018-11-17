@@ -30,38 +30,34 @@ public class WindowBatchInterval {
 	        
 	     
 	        JavaSparkContext sc = new JavaSparkContext(conf);
-	        JavaStreamingContext streamingContext = new JavaStreamingContext(sc, Durations.minutes(2));
+	        JavaStreamingContext streamingContext = new JavaStreamingContext(sc, Durations.seconds(5));
 	        streamingContext.checkpoint("C:\\Users\\sk250102\\Downloads\\bigdataSetup\\hadoop\\checkpoint");
 	        Logger rootLogger = LogManager.getRootLogger();
 	   		rootLogger.setLevel(Level.WARN); 
 	   		
-	   		List<Tuple2<String, Integer>> tuples = Arrays.asList(new Tuple2<>("hello", 10), new Tuple2<>("world", 10));
-		    JavaPairRDD<String, Integer> initialRDD = streamingContext.sparkContext().parallelizePairs(tuples);
-				    
-
 		    JavaReceiverInputDStream<String> StreamingLines = streamingContext.socketTextStream( "10.0.75.1", Integer.parseInt("9000"), StorageLevels.MEMORY_AND_DISK_SER);
 		    
 		    JavaDStream<String> words = StreamingLines.flatMap( str -> Arrays.asList(str.split(" ")).iterator() );
 		   
 		    JavaPairDStream<String, Integer> wordCounts = words.mapToPair(str-> new Tuple2<>(str, 1)).reduceByKey((count1,count2) ->count1+count2 );
 		   
-		    wordCounts.print();
-		    wordCounts.window(Durations.minutes(8)).countByValue()
+		    //wordCounts.print();
+		   // wordCounts.window(Durations.seconds(25)).countByValue()
+	      // .foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
+		    wordCounts.window(Durations.seconds(15),Durations.seconds(5)).countByValue()
 	       .foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
-		    wordCounts.window(Durations.minutes(8),Durations.minutes(2)).countByValue()
-	       .foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
-		    wordCounts.window(Durations.minutes(12),Durations.minutes(8)).countByValue()
-	       .foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
-		    wordCounts.window(Durations.minutes(2),Durations.minutes(2)).countByValue()
-	       .foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
-		    wordCounts.window(Durations.minutes(12),Durations.minutes(12)).countByValue()
-	       .foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
+		   // wordCounts.window(Durations.seconds(12),Durations.seconds(8)).countByValue()
+	       //.foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
+		   // wordCounts.window(Durations.seconds(2),Durations.seconds(2)).countByValue()
+	      // .foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
+		   // wordCounts.window(Durations.seconds(12),Durations.seconds(12)).countByValue()
+	       //.foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
 	       
 		    //comment these two operation to make it run
-		    wordCounts.window(Durations.minutes(5),Durations.minutes(2)).countByValue()
-	       .foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
-		    wordCounts.window(Durations.minutes(10),Durations.minutes(1)).countByValue()
-	       .foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
+		    //wordCounts.window(Durations.minutes(5),Durations.minutes(2)).countByValue()
+	       //.foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
+		   // wordCounts.window(Durations.minutes(10),Durations.minutes(1)).countByValue()
+	      // .foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
 	       
 	        streamingContext.start();
 	        try {
