@@ -30,12 +30,12 @@ public final class WordCountSocketJava8Ex {
         System.setProperty("hadoop.home.dir", "C:\\Users\\sk250102\\Downloads\\bigdataSetup\\hadoop");
 	
 	    SparkConf sparkConf = new SparkConf().setAppName("WordCountSocketEx").setMaster("local[*]");
-	    JavaStreamingContext streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(1));
+	    JavaStreamingContext streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(10));
 	    
 		Logger rootLogger = LogManager.getRootLogger();
 		rootLogger.setLevel(Level.WARN);
 	    
-	    List<Tuple2<String, Integer>> tuples = Arrays.asList(new Tuple2<>("hello", 10), new Tuple2<>("world", 10));
+	    List<Tuple2<String, Integer>> tuples = Arrays.asList(new Tuple2<>("hello", 10), new Tuple2<>("world", 14));
 	    JavaPairRDD<String, Integer> initialRDD = streamingContext.sparkContext().parallelizePairs(tuples);
 			    
 
@@ -45,11 +45,13 @@ public final class WordCountSocketJava8Ex {
 	   
 	    JavaPairDStream<String, Integer> wordCounts = words.mapToPair(str-> new Tuple2<>(str, 1)).reduceByKey((count1,count2) ->count1+count2 );
 	   
-	    wordCounts.print();
+	    //wordCounts.print();
 	    
 	    JavaPairDStream<String, Integer> joinedDstream = wordCounts.transformToPair(
 			   new Function<JavaPairRDD<String, Integer>, JavaPairRDD<String, Integer>>() {
+				   
 				    @Override public JavaPairRDD<String, Integer> call(JavaPairRDD<String, Integer> rdd) throws Exception {
+				    	
 				    	JavaPairRDD<String, Integer> modRdd = rdd.join(initialRDD).mapToPair(new PairFunction<Tuple2<String,Tuple2<Integer,Integer>>, String, Integer>() {
 							@Override
 							public Tuple2<String, Integer> call(Tuple2<String, Tuple2<Integer, Integer>> joinedTuple)

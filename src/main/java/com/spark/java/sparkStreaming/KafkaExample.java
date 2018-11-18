@@ -34,7 +34,7 @@ public class KafkaExample  {
    		//rootLogger.setLevel(Level.WARN); 
         SparkConf conf = new SparkConf().setAppName("KafkaExample").setMaster("local[*]");    
         JavaSparkContext sc = new JavaSparkContext(conf);
-        JavaStreamingContext streamingContext = new JavaStreamingContext(sc, Durations.minutes(2));
+        JavaStreamingContext streamingContext = new JavaStreamingContext(sc, Durations.seconds(10));
         streamingContext.checkpoint("C:\\Users\\sk250102\\Downloads\\bigdataSetup\\hadoop\\checkpoint");
         Logger rootLogger = LogManager.getRootLogger();
    		rootLogger.setLevel(Level.WARN); 
@@ -42,7 +42,7 @@ public class KafkaExample  {
         kafkaParams.put("bootstrap.servers", "10.0.75.1:9092");
         kafkaParams.put("key.deserializer", StringDeserializer.class);
         kafkaParams.put("value.deserializer", StringDeserializer.class);
-        kafkaParams.put("group.id", "use_a_separate_group_id_for_each_strea");
+        kafkaParams.put("group.id", "use_a_separate_group_id");
         kafkaParams.put("auto.offset.reset", "latest");
        // kafkaParams.put("enable.auto.commit", false);
 

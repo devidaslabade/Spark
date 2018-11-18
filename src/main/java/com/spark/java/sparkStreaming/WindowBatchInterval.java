@@ -9,8 +9,10 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.StorageLevels;
+import org.apache.spark.api.java.function.VoidFunction;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaPairDStream;
@@ -26,11 +28,11 @@ public class WindowBatchInterval {
 			 System.setProperty("hadoop.home.dir", "C:\\Users\\sk250102\\Downloads\\bigdataSetup\\hadoop");
 	    	//Logger rootLogger = LogManager.getRootLogger();
 	   		//rootLogger.setLevel(Level.WARN); 
-	        SparkConf conf = new SparkConf().setAppName("KafkaExample").setMaster("local[*]");
+	        SparkConf conf = new SparkConf().setAppName("KafkaExample").setMaster("local[2]");
 	        
 	     
 	        JavaSparkContext sc = new JavaSparkContext(conf);
-	        JavaStreamingContext streamingContext = new JavaStreamingContext(sc, Durations.seconds(5));
+	        JavaStreamingContext streamingContext = new JavaStreamingContext(sc, Durations.seconds(10));
 	        streamingContext.checkpoint("C:\\Users\\sk250102\\Downloads\\bigdataSetup\\hadoop\\checkpoint");
 	        Logger rootLogger = LogManager.getRootLogger();
 	   		rootLogger.setLevel(Level.WARN); 
@@ -44,9 +46,35 @@ public class WindowBatchInterval {
 		    //wordCounts.print();
 		   // wordCounts.window(Durations.seconds(25)).countByValue()
 	      // .foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
-		    wordCounts.window(Durations.seconds(15),Durations.seconds(5)).countByValue()
-	       .foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
-		   // wordCounts.window(Durations.seconds(12),Durations.seconds(8)).countByValue()
+		    
+		    
+		       JavaDStream<Long> tem = wordCounts.countByWindow(Durations.seconds(30),Durations.seconds(12));
+		       tem.print();
+		       
+		    /*   tem.foreachRDD(new VoidFunction<JavaRDD<Long>>() {
+				
+				@Override
+				public void call(JavaRDD<Long> arg0) throws Exception {
+					arg0.foreach(new VoidFunction<Long>() {
+
+						@Override
+						public void call(Long arg0) throws Exception {
+							System.out.println("the value is ::"+arg0);
+							
+						}
+					});
+					//System.out.println("the value is ::"+arg0.count());
+					
+					
+				}
+			});
+		    		*/
+		    		//.foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1()._1() +" and the val is ::"+x._1()._2())));
+		  
+		    
+		    
+		    
+		    // wordCounts.window(Durations.seconds(12),Durations.seconds(8)).countByValue()
 	       //.foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
 		   // wordCounts.window(Durations.seconds(2),Durations.seconds(2)).countByValue()
 	      // .foreachRDD(tRDD -> tRDD.foreach(x->System.out.println(new Date()+" ::The window count tag is ::"+x._1() +" and the val is ::"+x._2())));
