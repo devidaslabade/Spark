@@ -40,6 +40,7 @@ public class WordCountSocketStateful {
 		    @SuppressWarnings("unchecked")
 		    List<Tuple2<String, Integer>> tuples =Arrays.asList(new Tuple2<>("hello", 10), new Tuple2<>("world", 12));
 		    JavaPairRDD<String, Integer> initialRDD = streamingContext.sparkContext().parallelizePairs(tuples);
+
 		    
 		    JavaReceiverInputDStream<String> StreamingLines = streamingContext.socketTextStream( "10.0.75.1", Integer.parseInt("9000"), StorageLevels.MEMORY_AND_DISK_SER);
 		    

@@ -12,12 +12,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class StructuredStreamingExample {
 
 	public static void main(String[] args) throws StreamingQueryException {
-		System.setProperty("hadoop.home.dir", "C:\\softwares\\Winutils");
+		//System.setProperty("hadoop.home.dir", "C:\\softwares\\Winutils");
 		SparkSession sparkSession = SparkSession.builder().master("local[*]").appName("structured Streaming Example")
-				.config("spark.sql.warehouse.dir", "file:////C:/Users/sgulati/spark-warehouse").getOrCreate();
+				.getOrCreate();
 
-		Dataset<Row> inStream = sparkSession.readStream().format("socket").option("host", "10.204.136.223")
-				.option("port", 9999).load();
+		Dataset<Row> inStream = sparkSession.readStream().format("socket").option("host", "10.0.75.1")
+				.option("port", 9000).load();
 
 		Dataset<FlightDetails> dsFlightDetails = inStream.as(Encoders.STRING()).map(x -> {
 			ObjectMapper mapper = new ObjectMapper();
